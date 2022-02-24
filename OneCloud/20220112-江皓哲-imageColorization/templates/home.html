@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传图片</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+<div class=".container" id="app" align="center">
+    <form method="POST" name="f1" action="{{ base_dir+'/colorization'}}" enctype="multipart/form-data">
+
+        <div class="upload" style="display: inline-block">
+            <button type="button" onclick="chooseFile.click()" onmouseover="this.style.color='red';"onmouseout="this.style.color=''">上传图片</button>
+            <input type="file" id="chooseFile"  name="photo" @change="upload" style="display:none;">
+        </div>
+
+        <div class="colorize" style="margin-left:10px;display: inline-block">
+            <button type="button" @click="checkForm()" onmouseover="this.style.color='red';" onmouseout="this.style.color=''">提交图片</button>
+        </div>
+
+        <ul class="view" style="width: 50%;">
+            <li v-for="(item,index) in list" :key="index" style="list-style: none;">
+                <img :src="item" style="display: block; width: 100%;height: 100%;object-fit: scale-down;"/>
+                <button type="button" style="align-self: center" @click="mov(index)" onmouseover="this.style.color='red';" onmouseout="this.style.color=''" >取消</button>
+            </li>
+        </ul>
+
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    console.log(window)
+    var app = new Vue({
+        el: "#app",
+        data: {
+            list: []
+        },
+        methods: {
+             checkForm(e) {
+                if (this.list.length==0){
+                    alert("图片不能为空");
+                    return;
+                }
+                document.f1.submit();
+            },
+            upload(e) {
+                //e.target指向事件执行时鼠标所点击区域的那个元素
+                console.log(e.target.files)
+                for (let item of e.target.files) {
+                    if (!/image\/\w+/.test(item.type)) {
+                        alert("只能选择图片");
+                        return;
+                    }
+                    console.log(item);
+                    var _this = this;
+                    let reader = new FileReader();
+                    // readAsDataURL方法可以将上传的图片格式转为base64,然后在存入到图片路径,这样就可以上传任意位置的图片
+                    reader.readAsDataURL(item);
+                    reader.addEventListener('load', function () {
+                        _this.list = []
+                        _this.list.push(this.result)
+                    })
+                }
+                //------------------------------------------------------------
+            },
+            mov(index) {
+                console.log(index);
+                this.list.splice(index, 1);
+            }
+
+            //
+        }
+    })
+</script>
+</body>
+</html>

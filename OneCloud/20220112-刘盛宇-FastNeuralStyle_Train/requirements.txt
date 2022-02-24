@@ -1,0 +1,4 @@
+flowvision==0.0.3
+numpy==1.21.1
+oneflow==0.6.0.dev20211111+cu111
+opencv_python==4.5.3.56

@@ -1,0 +1,11 @@
+log/
+*plan
+core.*
+*.pyc
+*.ipynb
+.vscode
+.idea
+.DS_Store
+.clangd
+compile_commands.json
+.cache
